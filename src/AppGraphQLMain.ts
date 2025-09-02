@@ -5,6 +5,7 @@ import { GQLModelHandler } from './handlers/GQLModelHandler.js';
 import { ApolloServer } from '@apollo/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { playgroundPath } from '@nodeknit/app-graphql';
 
 export interface GraphQLAppConfig {
     endpoint?: string;
@@ -92,7 +93,6 @@ export class AppGraphQL extends AbstractApp {
         // Добавляем GET обработчик для GraphQL Playground
         this.appManager.app.get(this.config.endpoint!, async (req: any, res: any) => {
             try {
-                const playgroundPath = join(process.cwd(), 'local_modules', 'app-graphql', 'src', 'playground.html');
                 const playgroundHtml = readFileSync(playgroundPath, 'utf8');
                 
                 res.setHeader('Content-Type', 'text/html');

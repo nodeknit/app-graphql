@@ -9,3 +9,11 @@ export * from './lib/types';
 
 // Re-export commonly used types
 export { Model } from 'sequelize-typescript';
+
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export const playgroundPath = join(__dirname, 'playground.html');
