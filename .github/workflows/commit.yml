@@ -26,15 +26,6 @@ jobs:
       - name: build
         run: tsc
 
-      - name: Check dist files
-        run: |
-          echo "Contents of dist directory:"
-          ls -la dist
-          echo "Contents of dist/src:"
-          ls -la dist/src
-          echo "Contents of dist/tests:"
-          ls -la dist/tests
-
       - run: |
           cp ./package.json ./dist
           cp ./src/playground.html ./dist/src/playground.html

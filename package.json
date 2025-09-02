@@ -5,10 +5,6 @@
     "description": "GraphQL schema generator for Sequelize models with decorators support",
     "main": "index.js",
     "typings": "index.d.ts",
-    "files": [
-        "dist",
-        "src/playground.html"
-    ],
     "scripts": {
         "build": "tsc && cp src/playground.html dist/src/playground.html",
         "dev": "tsc --watch",
