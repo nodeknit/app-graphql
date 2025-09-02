@@ -1,5 +1,5 @@
 import { AbstractCollectionHandler, CollectionItem, AppManager } from "@nodeknit/app-manager";
-import { getGQLModelMetadata, getGQLFields } from '../decorators/index.js';
+import { getGQLModelMetadata, getGQLFields } from '../decorators/index';
 import { AppGraphQL } from '../AppGraphQLMain.js';
 
 export class GQLModelHandler extends AbstractCollectionHandler {

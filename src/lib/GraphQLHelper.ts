@@ -1,5 +1,5 @@
 import { SequelizeModel, GraphQLResolver, GraphQLType, GraphQLFieldType, GraphQLQueryHandler, GraphQLMutationHandler, GraphQLSubscriptionHandler } from "./types";
-import { getGQLModelMetadata, getGQLFields, GQLFieldConfig, GQLModelConfig, AuthResult } from '../decorators/index.js';
+import { getGQLModelMetadata, getGQLFields, GQLFieldConfig, GQLModelConfig, AuthResult } from '../decorators/index';
 import { WhereOptions } from 'sequelize';
 
 export class GraphQLHelper {
