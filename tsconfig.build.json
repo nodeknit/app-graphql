@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": ["../app-manager/**/*", "node_modules", "dist"],
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "noEmitOnError": false
+  }
+}
