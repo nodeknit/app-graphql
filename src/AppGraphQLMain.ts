@@ -5,7 +5,7 @@ import { GQLModelHandler } from './handlers/GQLModelHandler.js';
 import { ApolloServer } from '@apollo/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { playgroundPath } from '@nodeknit/app-graphql';
+import { playgroundPath } from './index';
 
 export interface GraphQLAppConfig {
     endpoint?: string;
