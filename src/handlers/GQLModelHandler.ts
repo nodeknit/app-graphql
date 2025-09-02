@@ -1,15 +1,16 @@
-import { AbstractCollectionHandler, CollectionItem } from "@nodeknit/app-manager";
+import { AbstractCollectionHandler, CollectionItem, AppManager } from "@nodeknit/app-manager";
 import { getGQLModelMetadata, getGQLFields } from '../decorators/index.js';
+import { AppGraphQL } from '../AppGraphQLMain.js';
 
 export class GQLModelHandler extends AbstractCollectionHandler {
-    private graphqlApp: any;
+    private graphqlApp: AppGraphQL;
 
-    constructor(graphqlApp: any) {
+    constructor(graphqlApp: AppGraphQL) {
         super();
         this.graphqlApp = graphqlApp;
     }
 
-    async process(appManager: any, collectionItems: CollectionItem[]): Promise<void> {
+    async process(appManager: AppManager, collectionItems: CollectionItem[]): Promise<void> {
         console.log(`🔍 Processing ${collectionItems.length} GQL models from collections...`);
 
         for (const collectionItem of collectionItems) {
@@ -40,7 +41,7 @@ export class GQLModelHandler extends AbstractCollectionHandler {
         }
     }
 
-    async unprocess(appManager: any, collectionItems: CollectionItem[]): Promise<void> {
+    async unprocess(appManager: AppManager, collectionItems: CollectionItem[]): Promise<void> {
         console.log('🧹 Cleaning up GQL model collection');
 
         for (const collectionItem of collectionItems) {

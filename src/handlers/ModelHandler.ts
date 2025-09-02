@@ -1,8 +1,7 @@
-import { Collection, CollectionHandler, CollectionItem, AppManager } from "@nodeknit/app-manager";
+import { AbstractCollectionHandler, CollectionItem, AppManager } from "@nodeknit/app-manager";
 import { getGraphQLModelMetadata } from '../decorators/index.js';
 
-@Collection('graphql-models')
-export class ModelHandler implements CollectionHandler {
+export class ModelHandler extends AbstractCollectionHandler {
 
     async process(appManager: AppManager, collectionItems: CollectionItem[]): Promise<void> {
         // Автоматически находим все модели Sequelize с GraphQL декораторами
@@ -15,17 +14,11 @@ export class ModelHandler implements CollectionHandler {
             if (metadata && !metadata.exclude) {
                 console.log(`🔍 Found GraphQL model: ${model.name}`);
                 
-                // Добавляем модель в коллекцию для обработки
-                collectionItems.push({
-                    appId: 'app-graphql',
-                    item: model,
-                    itemId: model.name,
-                    metadata: metadata
-                });
+                // Модель уже должна быть в коллекции, просто логируем
             }
         }
         
-        console.log(`📊 Discovered ${collectionItems.length} GraphQL models from Sequelize`);
+        console.log(`📊 Found ${collectionItems.length} GraphQL models in collection`);
     }
 
     async unprocess(appManager: AppManager, collectionItems: CollectionItem[]): Promise<void> {
