@@ -1,0 +1,47 @@
+name: Run tests
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - next
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        with:
+          node-version: '22'
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        run: npm i 
+
+      - name: Run tests
+        run: npm run test
+
+      - name: build
+        run: tsc
+
+
+      - run: cp ./package.json ./dist && echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > ./dist/.npmrc
+
+      # resolve version with short commit hash
+      - run: |
+          set -x
+          BRANCH=${GITHUB_REF##*/}
+          PACKAGE=$(jq -r '.name' package.json)
+          VERLOC=$(jq -r '.version' package.json)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          
+          VEROUT="${VERLOC}-commit.${COMMIT_HASH}"
+          jq -r --arg VER "$VEROUT" '.version = $VER' package.json > /tmp/package.json && mv /tmp/package.json ./package.json
+        working-directory: ./dist
+      
+      - run: npm publish --tag commit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: ./dist
