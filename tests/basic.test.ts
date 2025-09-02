@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-describe("app-adminizer smoke test", () => {
+describe("app-graphql smoke test", () => {
   it("should run tests", () => {
     expect(true).toBe(true);
   });

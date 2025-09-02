@@ -15,11 +15,11 @@
     "declarationMap": false,
     "sourceMap": true,
     "downlevelIteration": true,
-    "types": ["jest", "node"]
+    "types": ["vitest/globals", "node"]
   },
   "include": [
     "src/**/*",
-    "__tests__/**/*"
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",
