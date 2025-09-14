@@ -17,3 +17,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const playgroundPath = join(__dirname, 'playground.html');
+
+// Default export
+export { AppGraphQL as default } from './AppGraphQLMain';
