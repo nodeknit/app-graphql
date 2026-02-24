@@ -36,7 +36,7 @@ export function generateGraphQLModelConfig(
   options: GenerateGraphQLConfigOptions = {}
 ): AbstractGraphQLModelConfig {
   const fieldMeta = getGraphQLFields(modelClass);
-  const modelMeta = getGraphQLModelMetadata(modelClass);
+  const modelMeta = getGraphQLModelMetadata(modelClass) ?? {};
   const exclude = new Set(options.excludeFields ?? ['createdAt', 'updatedAt']);
 
   const config: GraphQLModelConfig = {

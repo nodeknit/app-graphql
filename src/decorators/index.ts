@@ -150,8 +150,8 @@ export function getGQLFields(target: any): Record<string, GQLFieldConfig> {
 }
 
 // --- Получение метаданных модели ---
-export function getGQLModelMetadata(target: Function): GQLModelConfig {
-  return Reflect.getMetadata(GQL_MODEL_KEY, target) || {};
+export function getGQLModelMetadata(target: Function): GQLModelConfig | undefined {
+  return Reflect.getMetadata(GQL_MODEL_KEY, target);
 }
 
 // Legacy aliases for backward compatibility

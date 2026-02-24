@@ -408,6 +408,18 @@ ${subscriptionFields}
     }
 
     private isFieldBlacklisted(modelName: string, fieldName: string): boolean {
+        const metadata = this.modelMetadata.get(modelName);
+        const modelConfig = metadata?.modelConfig;
+        const fieldConfig = metadata?.fieldConfigs?.[fieldName];
+
+        if (fieldConfig?.exclude) {
+            return true;
+        }
+
+        if (modelConfig?.excludeFields?.includes(fieldName)) {
+            return true;
+        }
+
         return this.blackList.has(`${modelName}.${fieldName}`) ||
                this.blackList.has(fieldName) ||
                this.blackList.has(modelName);
@@ -582,7 +594,7 @@ ${subscriptionFields}
             const modelConfig = metadata?.modelConfig;
 
             const { input } = args;
-            let _input = null
+            let _input = input;
             // Проверка авторизации через authHandler
             if (modelConfig?.authRequired) {
                 if (!modelConfig.authHandler) {
