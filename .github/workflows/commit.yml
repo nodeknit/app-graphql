@@ -1,49 +1,54 @@
-name: Run tests
+name: Publish Package to GitHub Packages (commit)
 
 on:
   push:
-    branches-ignore:
-      - master
-      - next
+  pull_request:
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-        uses: actions/setup-node@v3
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@nodeknit'
+          always-auth: true
 
       - name: Install dependencies
-        run: npm i 
+        run: npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
-        run: npm run test
-
-      - name: build
-        run: tsc
-
-      - run: |
-          cp ./package.json ./dist
-          cp ./src/playground.html ./dist/src/playground.html
-          echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > ./dist/.npmrc
-
-      # resolve version with short commit hash
-      - run: |
-          set -x
-          BRANCH=${GITHUB_REF##*/}
-          PACKAGE=$(jq -r '.name' package.json)
-          VERLOC=$(jq -r '.version' package.json)
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          
-          VEROUT="${VERLOC}-commit.${COMMIT_HASH}"
-          jq -r --arg VER "$VEROUT" '.version = $VER' package.json > /tmp/package.json && mv /tmp/package.json ./package.json
-        working-directory: ./dist
-      
-      - run: npm publish --tag commit
+        run: npm test -- --run
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build package
+        run: npm run build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare package contents
+        run: npm run package:prepare
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve publish version
+        run: npm run package:version
+        env:
+          PACKAGE_CHANNEL: commit
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish package
+        run: npm publish --tag commit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ./dist
