@@ -8,7 +8,9 @@
     "scripts": {
         "build": "tsc && cp src/playground.html dist/src/playground.html",
         "dev": "tsc --watch",
-        "test": "vitest"
+        "test": "vitest",
+        "package:prepare": "node ./scripts/prepare-package.mjs",
+        "package:version": "node ./scripts/version-package.mjs"
     },
     "keywords": [
         "graphql",
