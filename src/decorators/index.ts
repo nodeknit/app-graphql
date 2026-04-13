@@ -3,8 +3,10 @@ import { Request } from 'express';
 import { WhereOptions } from 'sequelize';
 
 // --- Ключи для Reflect Metadata ---
-const GQL_MODEL_KEY = Symbol('gql:model');
-const GQL_FIELDS_KEY = Symbol('gql:fields');
+// Symbol.for is used so metadata stays compatible even when decorators
+// are loaded from different module entry points (src/dist, CJS/ESM).
+const GQL_MODEL_KEY = Symbol.for('app:graphql:model');
+const GQL_FIELDS_KEY = Symbol.for('app:graphql:fields');
 
 // --- Типы для GQL конфигурации ---
 export interface GQLFieldConfig {

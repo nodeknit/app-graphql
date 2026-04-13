@@ -13,6 +13,7 @@ export class GraphQLHelper {
     private whiteList: Set<string> = new Set();
     private modelMetadata: Map<string, { modelConfig: GQLModelConfig, fieldConfigs: Record<string, GQLFieldConfig> }> = new Map();
     private sequelize: any;
+    private skippedModelsWithoutFields: Set<string> = new Set();
 
     constructor(sequelize?: any) {
         this.sequelize = sequelize;
@@ -127,12 +128,20 @@ export class GraphQLHelper {
                 continue;
             }
 
+            if (!this.shouldIncludeModelInSchema(model)) {
+                continue;
+            }
+
             schema += this.generateModelType(model) + '\n';
         }
 
         // Generate input types for mutations
         for (const [modelName, model] of this.models) {
             if (this.whiteList.size > 0 && !this.whiteList.has(modelName)) {
+                continue;
+            }
+
+            if (!this.shouldIncludeModelInSchema(model)) {
                 continue;
             }
 
@@ -244,6 +253,10 @@ export class GraphQLHelper {
                 continue;
             }
 
+            if (!this.shouldIncludeModelInSchema(model)) {
+                continue;
+            }
+
             const metadata = this.modelMetadata.get(modelName);
             const modelConfig = metadata?.modelConfig;
             const operations = modelConfig?.operations || { query: true, mutation: true, subscription: true };
@@ -294,6 +307,18 @@ export class GraphQLHelper {
                 subscriptionFields += `  """${subscription.description}"""\n`;
             }
             subscriptionFields += `  ${subscription.name}: ${subscription.type}\n`;
+        }
+
+        if (!queryFields.trim()) {
+            queryFields = '  _empty: Boolean\n';
+        }
+
+        if (!mutationFields.trim()) {
+            mutationFields = '  _empty: Boolean\n';
+        }
+
+        if (!subscriptionFields.trim()) {
+            subscriptionFields = '  _empty: Boolean\n';
         }
 
         return `
@@ -351,6 +376,20 @@ ${subscriptionFields}
         }
 
         return fields;
+    }
+
+    private shouldIncludeModelInSchema(model: SequelizeModel): boolean {
+        const fields = this.extractModelFields(model);
+        if (fields.length > 0) {
+            return true;
+        }
+
+        if (!this.skippedModelsWithoutFields.has(model.name)) {
+            this.skippedModelsWithoutFields.add(model.name);
+            console.warn(`⚠️ Skipping model ${model.name} in GraphQL schema: no fields left after filtering`);
+        }
+
+        return false;
     }
 
     private convertSequelizeAttributeToGraphQLField(name: string, attr: any, fieldConfig?: GQLFieldConfig): GraphQLFieldType | null {
@@ -435,6 +474,10 @@ ${subscriptionFields}
         // Generate CRUD resolvers for each model
         for (const [modelName, model] of this.models) {
             if (this.whiteList.size > 0 && !this.whiteList.has(modelName)) {
+                continue;
+            }
+
+            if (!this.shouldIncludeModelInSchema(model)) {
                 continue;
             }
 
